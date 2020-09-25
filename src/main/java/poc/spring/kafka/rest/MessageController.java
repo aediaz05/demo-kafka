@@ -11,8 +11,8 @@ import poc.spring.kafka.service.spec.MessageProducer;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/message/")
-public class MessageReceiver {
+@RequestMapping("api/messages/")
+public class MessageController {
 
     @Autowired
     private MessageProducer messageProducer;
@@ -21,20 +21,19 @@ public class MessageReceiver {
     private MessageDAO dao;
 
     @GetMapping("/{topic}")
-    ResponseEntity<List<Message>> getMessageByTopic(@PathVariable("topic") String topic){
+    public ResponseEntity<List<Message>> getMessageByTopic(@PathVariable("topic") String topic) {
         List<Message> messages = dao.getMessageByTopic(topic);
         return ResponseEntity.ok(messages);
     }
 
     @PostMapping(value = "/publish")
-    ResponseEntity<Message> publish(@RequestBody Message message){
+    public ResponseEntity<Message> publish(@RequestBody Message message) {
 
         try {
             messageProducer.send(message);
             return ResponseEntity.ok(message);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }
